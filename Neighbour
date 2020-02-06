@@ -49,7 +49,9 @@ public class Neighbours extends Application {
 
         // TODO update world
         isAllSatisfied(world,threshold);
-        Actor[] array = getUnsatisfied(world);
+        Integer[] array1 = getFree(world);
+        Integer[] array2 = getUnsatisfied(world);
+        move(world,array1,array2);
 
     }
 
@@ -92,10 +94,10 @@ public class Neighbours extends Application {
         return world;
     }
 
-    void shuffle(Actor[] arr) {
+    <T> void shuffle(T[] arr) {
         for (int i = arr.length; i > 1; i--) {
             int j = rand.nextInt(i);
-            Actor tmp = arr[j];
+            T tmp = arr[j];
             arr[j] = arr[i - 1];
             arr[i - 1] = tmp;
         }
@@ -150,7 +152,7 @@ public class Neighbours extends Application {
         }
     }
 
-    Actor[] getUnsatisfied(Actor[][] m) {
+    Integer[] getUnsatisfied(Actor[][] m) {
         int k = 0;
         for (int row = 0; row < m.length; row++) {
             for (int col = 0; col < m[row].length; col++) {
@@ -159,17 +161,53 @@ public class Neighbours extends Application {
                 }
             }
         }
-        Actor[] tmpArr = new Actor[k];
+        Integer[] tmpArr = new Integer[k];
         int i = 0;
         for (int row = 0; row < m.length; row++) {
             for (int col = 0; col < m[row].length; col++) {
                 if ((m[row][col] != null) && !m[row][col].isSatisfied) {
-                    tmpArr[i] = m[row][col]; // fixa row index och kolumn index inte sjävla actorn
+                    tmpArr[i] = row*m.length+col;
                     i++;
                 }
             }
         }
         return tmpArr;
+    }
+
+    Integer[] getFree(Actor[][] m) {
+        int k = 0;
+        for (int row = 0; row < m.length; row++) {
+            for (int col = 0; col < m[row].length; col++) {
+                if (m[row][col] == null) {
+                    k++;
+                }
+            }
+        }
+        Integer[] tmpArr = new Integer[k];
+        int i = 0;
+        for (int row = 0; row < m.length; row++) {
+            for (int col = 0; col < m[row].length; col++) {
+                if (m[row][col] == null) {
+                    tmpArr[i] = row*m.length+col;
+                    i++;
+                }
+            }
+        }
+        return tmpArr;
+    }
+
+    int getRowIndex (Integer a, Actor[][] m){
+        return a / m.length;
+    }
+    int getColIndex (Integer a, Actor[][] m){
+        return a % m.length;
+    }
+
+    void move (Actor[][] m, Integer[] freePosition, Integer[] unsatisfied) {
+        for (int i = 0; i < unsatisfied.length; i++){
+            m[getRowIndex(freePosition[i], m)][getColIndex(freePosition[i], m)] = m[getRowIndex(unsatisfied[i], m)][getColIndex(unsatisfied[i], m)];
+            m[getRowIndex(unsatisfied[i], m)][getColIndex(unsatisfied[i], m)] = null;
+        }
     }
 
     // Check if inside world
