@@ -1,0 +1,53 @@
+import static java.lang.System.out;
+
+/*
+ *  Pig Latin, silly secret language
+ *  https://en.wikipedia.org/wiki/Pig_Latin
+ *
+ *  See:
+ * -  ex2shortforswitch/ShortForLoop
+ *  - ex3string/
+ *      S1Character
+ *      S2String
+ *      S3StringBuilder
+
+ */
+public class Ex2PigLatin {
+
+    public static void main(String[] args) {
+        new Ex2PigLatin().program();
+    }
+
+    void program() {
+        // Should print true
+        out.println(toPigLatin("My name is Eric")
+                .equals("yMay amenay isway Ericway"));
+    }
+
+    // ---------- Methods --------------------
+    String toPigLatin(String str){
+        String[] words = str.trim().split("\\s+");
+        StringBuilder sh = new StringBuilder();
+        for (int k = 0; k<words.length; k++){
+            boolean a = words[k].startsWith("a");
+            boolean e = words[k].startsWith("E");
+            boolean o = words[k].startsWith("o");
+            boolean i = words[k].startsWith("i");
+            boolean u = words[k].startsWith("u");
+            boolean y = words[k].startsWith("y");
+
+            if(a || e || o || i || u || y ){
+                sh.append(' ').append(words[k]).append("way");
+            }
+            else{
+                String tmpStr = words[k].substring(0,1);
+                words[k] = words[k].substring(1);
+                sh.append(' ').append(words[k]).append(tmpStr).append("ay");
+            }
+        }
+
+        return sh.toString().trim();
+    }
+
+
+}
